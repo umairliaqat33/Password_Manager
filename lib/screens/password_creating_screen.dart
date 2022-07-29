@@ -1,8 +1,10 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:password_manager/screens/login_screen.dart';
 
 class PasswordCreation extends StatefulWidget {
   const PasswordCreation({Key? key}) : super(key: key);
@@ -68,22 +70,37 @@ class _PasswordCreationState extends State<PasswordCreation> {
     Random _random = Random();
 
     final randomString =
-    List.generate(length, (index) => text[_random.nextInt(text.length)])
-        .join();
+        List.generate(length, (index) => text[_random.nextInt(text.length)])
+            .join();
     setState(() {
       textController.text = randomString;
     });
   }
+
   @override
   void initState() {
     selectText();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Password Manager"),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut(); //signOut function called
+              Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()))
+                  .catchError((e) {
+                Fluttertoast.showToast(msg: e);
+              });
+            },
+            icon: Icon(Icons.logout),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
@@ -137,9 +154,9 @@ class _PasswordCreationState extends State<PasswordCreation> {
                     },
                     style: ButtonStyle(
                       foregroundColor: MaterialStateColor.resolveWith(
-                              (states) => Colors.white),
+                          (states) => Colors.white),
                       backgroundColor: MaterialStateColor.resolveWith(
-                              (states) => Colors.purple),
+                          (states) => Colors.purple),
                     ),
                     child: Text("Generate"),
                   ),
@@ -163,9 +180,9 @@ class _PasswordCreationState extends State<PasswordCreation> {
                     },
                     style: ButtonStyle(
                       foregroundColor: MaterialStateColor.resolveWith(
-                              (states) => Colors.white),
+                          (states) => Colors.white),
                       backgroundColor: MaterialStateColor.resolveWith(
-                              (states) => Colors.purple),
+                          (states) => Colors.purple),
                     ),
                     child: Text("Copy"),
                   ),
@@ -228,8 +245,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
                           isNumbers = !isNumbers;
                         });
                       }),
-                  Text("Digits",
-                      style: TextStyle(color: Colors.purpleAccent)),
+                  Text("Digits", style: TextStyle(color: Colors.purpleAccent)),
                 ],
               ),
               SizedBox(
