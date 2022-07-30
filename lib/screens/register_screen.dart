@@ -4,9 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:password_manager/models/constants.dart';
 import 'package:password_manager/models/credentials.dart';
+import 'package:password_manager/screens/google_signin.dart';
+import 'package:password_manager/screens/password_creating_screen.dart';
 import 'package:password_manager/screens/welcom_screen.dart';
 
 import 'login_screen.dart';
@@ -29,6 +32,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   bool isLoginError = false;
   String errorMessage = "Something Went Wrong Please Try again";
   bool _passwordVisible = true;
+  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
+  GoogleSignInAccount? _user;
+  GoogleSignInAccount? get user=>_user;
 
   @override
   Widget build(BuildContext context) {
@@ -59,13 +65,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  // Hero(
-                  //   tag: 'logo',
-                  //   child: Container(
-                  //     height: 200.0,
-                  //     child: Image.asset('assets/images/logo.png'),
-                  //   ),
-                  // ),
+                  Hero(
+                    tag: 'logo',
+                    child: Container(
+                      height: 200.0,
+                      child: Image.asset('images/Password_manager.png'),
+                    ),
+                  ),
                   Visibility(
                     visible: isLoginError,
                     child: Align(
@@ -243,6 +249,31 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       ),
                     ],
                   ),
+                  Container(
+                    height: 35,
+                    child: GestureDetector(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset("image/google_logo.png"),
+                          Text(
+                            "oogle SignIn",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        try {
+                          googleSignIn();
+                        } catch (e) {
+                          Fluttertoast.showToast(msg: e.toString());
+                          print(e.toString());
+                        }
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -315,5 +346,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
     }
+  }
+
+  Future googleSignIn() async{
+    final googleUser  =await _googleSignIn.signIn();
+    if(googleUser==null)return;
+    _user=googleUser;
+
+    final googleAuth= await googleUser.authentication;
+    final credential=GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    await FirebaseAuth.instance.signInWithCredential(credential);
+
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => PasswordCreation()));
   }
 }

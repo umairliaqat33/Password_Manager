@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:password_manager/screens/login_screen.dart';
 
 class PasswordCreation extends StatefulWidget {
@@ -91,7 +92,12 @@ class _PasswordCreationState extends State<PasswordCreation> {
         actions: [
           IconButton(
             onPressed: () async {
-              await FirebaseAuth.instance.signOut(); //signOut function called
+              await FirebaseAuth.instance.signOut();
+              // GoogleSignIn _googleSignIn=GoogleSignIn(scopes: ['Email']);
+              // if(_googleSignIn.currentUser!=null){
+              //   _googleSignIn.signOut();
+              // }
+              Fluttertoast.showToast(msg: "SignOutSuccessful");
               Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => LoginScreen()))
                   .catchError((e) {

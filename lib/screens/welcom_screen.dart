@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:password_manager/screens/password_creating_screen.dart';
 
 class WelcomeUserScreen extends StatefulWidget {
@@ -28,15 +29,20 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
   }
 
   void getValues() {
-    FirebaseFirestore.instance
-        .collection("Users")
-        .doc(user!.uid)
-        .get()
-        .then((value) {
-      setState(() {
-        name = value.get('Name');
+    if(user!=null){
+      FirebaseFirestore.instance
+          .collection("Users")
+          .doc(user!.uid)
+          .get()
+          .then((value) {
+        setState(() {
+          name = value.get('Name');
+        });
       });
-    });
+    }else{
+      GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
+      name=_googleSignIn.currentUser!.displayName!;
+    }
   }
 
   @override
