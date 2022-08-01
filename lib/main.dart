@@ -1,9 +1,13 @@
 // @dart=2.9
+// import 'dart:js';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:password_manager/models/database.dart';
 import 'package:password_manager/screens/login_screen.dart';
 import 'package:password_manager/screens/welcom_screen.dart';
+import 'package:provider/provider.dart';
 
 User user = FirebaseAuth.instance.currentUser;
 
@@ -12,7 +16,9 @@ Future<void> main() async {
   await Firebase.initializeApp();
   // runApp(ChangeNotifierProvider(
   //     create: (context) => Transactions(), child: MyApp()));
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context)=>Credentials(),
+      child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

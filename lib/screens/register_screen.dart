@@ -8,7 +8,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:password_manager/models/constants.dart';
 import 'package:password_manager/models/credentials.dart';
-import 'package:password_manager/screens/google_signin.dart';
 import 'package:password_manager/screens/password_creating_screen.dart';
 import 'package:password_manager/screens/welcom_screen.dart';
 
@@ -23,7 +22,7 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final _auth = FirebaseAuth.instance;
-  final emailController = TextEditingController();
+  final userNameController = TextEditingController();
   final passController = TextEditingController();
   final C_pass_controller = TextEditingController();
   final name_Controller = TextEditingController();
@@ -34,7 +33,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   bool _passwordVisible = true;
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
   GoogleSignInAccount? _user;
-  GoogleSignInAccount? get user=>_user;
+
+  GoogleSignInAccount? get user => _user;
 
   @override
   Widget build(BuildContext context) {
@@ -54,227 +54,229 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
       ),
       backgroundColor: Colors.white,
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Hero(
-                    tag: 'logo',
-                    child: Container(
-                      height: 200.0,
-                      child: Image.asset('images/Password_manager.png'),
-                    ),
-                  ),
-                  Visibility(
-                    visible: isLoginError,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        errorMessage,
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 15,
-                        ),
+      body: SingleChildScrollView(
+        child: ModalProgressHUD(
+          inAsyncCall: showSpinner,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Hero(
+                      tag: 'logo',
+                      child: Container(
+                        height: 200.0,
+                        child: Image.asset('image/Password_manager.png'),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Name is required";
-                      }
-                      return null;
-                    },
-                    textInputAction: TextInputAction.next,
-                    cursorColor: Colors.purpleAccent,
-                    keyboardType: TextInputType.name,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black),
-                    controller: name_Controller,
-                    decoration: kMessageTextFieldDecoration.copyWith(
-                      hintText: 'Enter Your Full Name',
-                      icon: Icon(Icons.account_circle),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Field required";
-                      }
-                      if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-                          .hasMatch(value)) {
-                        return "Enter a valid email";
-                      }
-                      return null;
-                    },
-                    textInputAction: TextInputAction.next,
-                    cursorColor: Colors.purple,
-                    keyboardType: TextInputType.emailAddress,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black),
-                    controller: emailController,
-                    decoration: kMessageTextFieldDecoration.copyWith(
-                      hintText: 'Enter Your Email',
-                      icon: Icon(Icons.email),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      RegExp regex = new RegExp(r"^.{8,}$");
-                      if (value!.isEmpty) {
-                        return "Field is required";
-                      }
-                      if (!regex.hasMatch(value)) {
-                        return "Password must contain 8 characters minimum";
-                      }
-                      return null;
-                    },
-                    textInputAction: TextInputAction.done,
-                    cursorColor: Colors.purple,
-                    textAlign: TextAlign.center,
-                    obscureText: _passwordVisible,
-                    style: TextStyle(color: Colors.black),
-                    controller: passController,
-                    decoration: kMessageTextFieldDecoration.copyWith(
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _passwordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Theme.of(context).primaryColorDark,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _passwordVisible = !_passwordVisible;
-                          });
-                        },
-                      ),
-                      hintText: 'Enter Your Password',
-                      icon: Icon(Icons.key),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Field is required";
-                      }
-                      if (value != passController.text) {
-                        return "Password do not match try again";
-                      }
-                      return null;
-                    },
-                    textInputAction: TextInputAction.done,
-                    cursorColor: Colors.purple,
-                    textAlign: TextAlign.center,
-                    obscureText: _passwordVisible,
-                    style: TextStyle(color: Colors.black),
-                    controller: C_pass_controller,
-                    decoration: kMessageTextFieldDecoration.copyWith(
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _passwordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Theme.of(context).primaryColorDark,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _passwordVisible = !_passwordVisible;
-                          });
-                        },
-                      ),
-                      hintText: 'Confirm Password',
-                      icon: Icon(Icons.key),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                    child: Material(
-                      color: Colors.purple,
-                      borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                      elevation: 5.0,
-                      child: MaterialButton(
-                        onPressed: () {
-                          SignUp(emailController.text, passController.text);
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        },
-                        splashColor: null,
-                        minWidth: 200.0,
-                        height: 42.0,
+                    Visibility(
+                      visible: isLoginError,
+                      child: Align(
+                        alignment: Alignment.center,
                         child: Text(
-                          'Register',
-                          style: TextStyle(color: Colors.white),
+                          errorMessage,
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 15,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text('Already have an account? '),
-                      TextButton(
-                        style: ButtonStyle(
-                            splashFactory: NoSplash
-                                .splashFactory //removing onclick splash color
-                            ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginScreen()));
-                        },
-                        child: Text("LogIn"),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    height: 35,
-                    child: GestureDetector(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset("image/google_logo.png"),
-                          Text(
-                            "oogle SignIn",
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                      onTap: () {
-                        try {
-                          googleSignIn();
-                        } catch (e) {
-                          Fluttertoast.showToast(msg: e.toString());
-                          print(e.toString());
-                        }
-                      },
+                    SizedBox(
+                      height: 8.0,
                     ),
-                  ),
-                ],
+                    TextFormField(
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Name is required";
+                        }
+                        return null;
+                      },
+                      textInputAction: TextInputAction.next,
+                      cursorColor: Colors.purpleAccent,
+                      keyboardType: TextInputType.name,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black),
+                      controller: name_Controller,
+                      decoration: kMessageTextFieldDecoration.copyWith(
+                        hintText: 'Enter Your Full Name',
+                        icon: Icon(Icons.account_circle),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Field required";
+                        }
+                        if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                            .hasMatch(value)) {
+                          return "Enter a valid email";
+                        }
+                        return null;
+                      },
+                      textInputAction: TextInputAction.next,
+                      cursorColor: Colors.purple,
+                      keyboardType: TextInputType.emailAddress,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black),
+                      controller: userNameController,
+                      decoration: kMessageTextFieldDecoration.copyWith(
+                        hintText: 'Enter Your Email',
+                        icon: Icon(Icons.email),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        RegExp regex = new RegExp(r"^.{8,}$");
+                        if (value!.isEmpty) {
+                          return "Field is required";
+                        }
+                        if (!regex.hasMatch(value)) {
+                          return "Password must contain 8 characters minimum";
+                        }
+                        return null;
+                      },
+                      textInputAction: TextInputAction.done,
+                      cursorColor: Colors.purple,
+                      textAlign: TextAlign.center,
+                      obscureText: _passwordVisible,
+                      style: TextStyle(color: Colors.black),
+                      controller: passController,
+                      decoration: kMessageTextFieldDecoration.copyWith(
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                        ),
+                        hintText: 'Enter Your Password',
+                        icon: Icon(Icons.key),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Field is required";
+                        }
+                        if (value != passController.text) {
+                          return "Password do not match try again";
+                        }
+                        return null;
+                      },
+                      textInputAction: TextInputAction.done,
+                      cursorColor: Colors.purple,
+                      textAlign: TextAlign.center,
+                      obscureText: _passwordVisible,
+                      style: TextStyle(color: Colors.black),
+                      controller: C_pass_controller,
+                      decoration: kMessageTextFieldDecoration.copyWith(
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                        ),
+                        hintText: 'Confirm Password',
+                        icon: Icon(Icons.key),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      child: Material(
+                        color: Colors.purple,
+                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                        elevation: 5.0,
+                        child: MaterialButton(
+                          onPressed: () {
+                            SignUp(userNameController.text, passController.text);
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          },
+                          splashColor: null,
+                          minWidth: 200.0,
+                          height: 42.0,
+                          child: Text(
+                            'Register',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('Already have an account? '),
+                        TextButton(
+                          style: ButtonStyle(
+                              splashFactory: NoSplash
+                                  .splashFactory //removing onclick splash color
+                              ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()));
+                          },
+                          child: Text("LogIn"),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      height: 35,
+                      child: GestureDetector(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset("image/google_logo.png"),
+                            Text(
+                              "oogle SignIn",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        onTap: () {
+                          try {
+                            googleSignIn();
+                          } catch (e) {
+                            Fluttertoast.showToast(msg: e.toString());
+                            print(e.toString());
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -331,14 +333,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     try {
       FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
       User? user = _auth.currentUser;
-      UserModel userModel = UserModel();
-      userModel.email = user!.email;
-      userModel.name = name_Controller.text;
-      userModel.id = user.uid;
+      CredentialUserModel credentialUserModel = CredentialUserModel();
+      credentialUserModel.userName = name_Controller.text;
+      credentialUserModel.email = user!.email;
+      credentialUserModel.id = user.uid;
       await firebaseFirestore
           .collection('Users')
           .doc(user.uid)
-          .set(userModel.toMap());
+          .set(credentialUserModel.toMap());
 
       Fluttertoast.showToast(msg: "Account Created Successfully");
       Navigator.pushReplacement(context,
@@ -348,20 +350,33 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
   }
 
-  Future googleSignIn() async{
-    final googleUser  =await _googleSignIn.signIn();
-    if(googleUser==null)return;
-    _user=googleUser;
+  Future googleSignIn() async {
+    final googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) return;
+    _user = googleUser;
 
-    final googleAuth= await googleUser.authentication;
-    final credential=GoogleAuthProvider.credential(
+    final googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    await FirebaseAuth.instance.signInWithCredential(credential);
 
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => PasswordCreation()));
+    await FirebaseAuth.instance.signInWithCredential(credential);
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: googleUser.email, password: googleAuth.idToken.toString());
+    setState(() {
+      userNameController.text= _user!.email;
+      passController.text=googleAuth.idToken.toString();
+    });
+    CredentialUserModel credentialUserModel = CredentialUserModel();
+    credentialUserModel.userName = name_Controller.text;
+    credentialUserModel.email = user!.email;
+    credentialUserModel.id = credential.signInMethod;
+
+    postDetailsToFireStore();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => PasswordCreation()));
+    Fluttertoast.showToast(msg: credential.signInMethod);
+    Fluttertoast.showToast(msg: "SignIn successful");
   }
 }

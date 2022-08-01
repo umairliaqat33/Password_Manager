@@ -7,7 +7,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:password_manager/main.dart';
 import 'package:password_manager/models/constants.dart';
-import 'package:password_manager/screens/google_signin.dart';
 import 'package:password_manager/screens/password_creating_screen.dart';
 import 'package:password_manager/screens/register_screen.dart';
 import 'package:password_manager/screens/welcom_screen.dart';

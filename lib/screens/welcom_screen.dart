@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:password_manager/screens/password_creating_screen.dart';
+import 'package:password_manager/screens/screen_shifter.dart';
 
 class WelcomeUserScreen extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
   Time() {
     Timer(Duration(seconds: 5), () {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => PasswordCreation()));
+          context, MaterialPageRoute(builder: (context) => Shifter()));
     });
   }
 
@@ -36,7 +37,7 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
           .get()
           .then((value) {
         setState(() {
-          name = value.get('Name');
+          name = value.get('name');
         });
       });
     }else{

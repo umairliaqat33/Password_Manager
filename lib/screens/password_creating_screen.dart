@@ -87,27 +87,6 @@ class _PasswordCreationState extends State<PasswordCreation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Password Manager"),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              // GoogleSignIn _googleSignIn=GoogleSignIn(scopes: ['Email']);
-              // if(_googleSignIn.currentUser!=null){
-              //   _googleSignIn.signOut();
-              // }
-              Fluttertoast.showToast(msg: "SignOutSuccessful");
-              Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()))
-                  .catchError((e) {
-                Fluttertoast.showToast(msg: e);
-              });
-            },
-            icon: Icon(Icons.logout),
-          ),
-        ],
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40.0),
@@ -286,6 +265,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
                   value: length.toDouble(),
                   divisions: 50,
                   max: 50.0,
+                  min: 8,
                   onChanged: (newValue) {
                     setState(() {
                       length = newValue.toInt();
