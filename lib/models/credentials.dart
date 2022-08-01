@@ -3,17 +3,14 @@ class CredentialUserModel {
   String? userName;
   String? id;
 
-  CredentialUserModel({this.userName, this.email,this.id});
+  CredentialUserModel({this.userName, this.email, this.id});
 
   factory CredentialUserModel.fromMap(map) {
-    return CredentialUserModel(userName: map['userName'], email: map['email'],id: map['id']);
+    return CredentialUserModel(
+        userName: map['userName'], email: map['email'], id: map['id']);
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      'userName': userName,
-      'password': email,
-      'id':id
-    };
+    return {'userName': userName, 'password': email, 'id': id};
   }
 }

@@ -8,7 +8,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:password_manager/models/constants.dart';
 import 'package:password_manager/models/credentials.dart';
-import 'package:password_manager/screens/password_creating_screen.dart';
 import 'package:password_manager/screens/welcom_screen.dart';
 
 import 'login_screen.dart';
@@ -42,16 +41,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.purple,
-          ),
-          onPressed: () {
-            // Navigator.pushReplacement(context,
-            //     MaterialPageRoute(builder: (context) => WelcomeScreen()));
-          },
-        ),
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -218,7 +207,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         elevation: 5.0,
                         child: MaterialButton(
                           onPressed: () {
-                            SignUp(userNameController.text, passController.text);
+                            SignUp(
+                                userNameController.text, passController.text);
                             FocusManager.instance.primaryFocus?.unfocus();
                           },
                           splashColor: null,
@@ -361,21 +351,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       idToken: googleAuth.idToken,
     );
 
-
     await FirebaseAuth.instance.signInWithCredential(credential);
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: googleUser.email, password: googleAuth.idToken.toString());
     setState(() {
-      userNameController.text= _user!.email;
-      passController.text=googleAuth.idToken.toString();
+      name_Controller.text = _user!.displayName.toString();
     });
-    CredentialUserModel credentialUserModel = CredentialUserModel();
-    credentialUserModel.userName = name_Controller.text;
-    credentialUserModel.email = user!.email;
-    credentialUserModel.id = credential.signInMethod;
 
+    print(name_Controller.text);
     postDetailsToFireStore();
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => PasswordCreation()));
+        context, MaterialPageRoute(builder: (context) => WelcomeUserScreen()));
     Fluttertoast.showToast(msg: credential.signInMethod);
     Fluttertoast.showToast(msg: "SignIn successful");
   }

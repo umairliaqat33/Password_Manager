@@ -36,7 +36,6 @@ class _PasswordListState extends State<PasswordList> {
               .collection('Users')
               .doc(user!.uid)
               .collection('credentials')
-              // .orderBy('website', descending: true)
               .snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -44,8 +43,9 @@ class _PasswordListState extends State<PasswordList> {
             return snapshot.connectionState == ConnectionState.waiting
                 ? Center(
                     child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
-                  ))
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                    ),
+                  )
                 : snapshot.data!.docs.isEmpty
                     ? Column(
                         children: [
@@ -71,11 +71,12 @@ class _PasswordListState extends State<PasswordList> {
                           DocumentSnapshot data = snapshot.data!.docs[index];
                           String name = data.get("userName");
                           String password = data.get("password");
-                          String email=data.get("email");
-                          String website=data.get("website");
+                          String email = data.get("email");
+                          String website = data.get("website");
                           return GestureDetector(
-                            onLongPress: (){
-                              createDialogBox(context,email,name,password,website);
+                            onTap: () {
+                              createDialogBox(
+                                  context, email, name, password, website);
                             },
                             child: Card(
                               elevation: 4,
@@ -107,10 +108,8 @@ class _PasswordListState extends State<PasswordList> {
                                       ),
                                     ),
                                     Flexible(
-                                      //it will help our text not to occupy space which is remaining after all other widgets.
                                       fit: FlexFit.tight,
                                       child: SingleChildScrollView(
-                                        //this is used to make our text scrollable if text exceeds from limit
                                         scrollDirection: Axis.horizontal,
                                         child: Column(
                                           crossAxisAlignment:
@@ -138,9 +137,7 @@ class _PasswordListState extends State<PasswordList> {
                                       alignment: Alignment.centerRight,
                                       child: media.size.width > 450
                                           ? TextButton.icon(
-                                              onPressed: () {
-
-                                              },
+                                        onPressed: () {},
                                               icon: Icon(Icons.delete),
                                               label: Text("Delete"),
                                             )

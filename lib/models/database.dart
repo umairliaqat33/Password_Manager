@@ -35,8 +35,8 @@ class Credentials with ChangeNotifier {
     };
   }
 
-  postDetailsToFireStore(String email, String name, String website,
-      String password) async {
+  postDetailsToFireStore(
+      String email, String name, String website, String password) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _auth.currentUser;
     Credentials credentials = Credentials();
@@ -65,8 +65,8 @@ class Credentials with ChangeNotifier {
     notifyListeners();
   }
 
-  void update(String email, String name, String website,
-      String password,DocumentSnapshot data) async {
+  void update(String email, String name, String website, String password,
+      DocumentSnapshot data) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _auth.currentUser;
     Credentials credentials = Credentials();
@@ -78,7 +78,8 @@ class Credentials with ChangeNotifier {
         .collection('Users')
         .doc(user!.uid)
         .collection('credentials')
-        .doc(data.id).update(credentials.toMap());
+        .doc(data.id)
+        .update(credentials.toMap());
     notifyListeners();
   }
 

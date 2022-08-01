@@ -1,9 +1,10 @@
 import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:password_manager/screens/password_creating_screen.dart';
 import 'package:password_manager/screens/screen_shifter.dart';
 
 class WelcomeUserScreen extends StatefulWidget {
@@ -30,19 +31,24 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
   }
 
   void getValues() {
-    if(user!=null){
-      FirebaseFirestore.instance
-          .collection("Users")
-          .doc(user!.uid)
-          .get()
-          .then((value) {
-        setState(() {
-          name = value.get('name');
+    try {
+      if (user != null) {
+        FirebaseFirestore.instance
+            .collection("Users")
+            .doc(user!.uid)
+            .get()
+            .then((value) {
+          setState(() {
+            name = value.get('name');
+          });
         });
-      });
-    }else{
-      GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
-      name=_googleSignIn.currentUser!.displayName!;
+      } else {
+        GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
+        name = _googleSignIn.currentUser!.displayName!;
+      }
+    } catch (e) {
+      print(e.toString());
+      Fluttertoast.showToast(msg: e.toString());
     }
   }
 
@@ -54,10 +60,13 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            // Hero(
-            //   tag: 'logo',
-            //   child: Image.asset('assets/images/logo.png'),
-            // ),
+            Hero(
+              tag: 'logo',
+              child: Container(
+                height: 200.0,
+                child: Image.asset('image/Password_manager.png'),
+              ),
+            ),
             Text(
               "Welcome",
               style: TextStyle(

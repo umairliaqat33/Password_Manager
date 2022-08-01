@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:password_manager/main.dart';
 import 'package:password_manager/models/constants.dart';
-import 'package:password_manager/screens/password_creating_screen.dart';
 import 'package:password_manager/screens/register_screen.dart';
 import 'package:password_manager/screens/welcom_screen.dart';
 
@@ -28,7 +26,9 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoginError = false;
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
   GoogleSignInAccount? _user;
-  GoogleSignInAccount? get user=>_user;
+
+  GoogleSignInAccount? get user => _user;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,9 +167,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: <Widget>[
                       Text('Don\'t have an account? '),
                       TextButton(
-                        style:
-                            ButtonStyle(splashFactory: NoSplash.splashFactory,
-                            ),
+                        style: ButtonStyle(
+                          splashFactory: NoSplash.splashFactory,
+                        ),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -187,15 +187,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset("image/google_logo.png"),
-                          Text("oogle SignIn",style: TextStyle(
-                            fontSize: 20,
-                          ),),
+                          Text(
+                            "oogle SignIn",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
                         ],
                       ),
-                      onTap: (){
-                        try{
+                      onTap: () {
+                        try {
                           googleSignIn();
-                        }catch(e){
+                        } catch (e) {
                           Fluttertoast.showToast(msg: e.toString());
                           print(e.toString());
                         }
@@ -243,20 +246,20 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future googleSignIn() async{
-    final googleUser  =await _googleSignIn.signIn();
-    if(googleUser==null)return;
-    _user=googleUser;
+  Future googleSignIn() async {
+    final googleUser = await _googleSignIn.signIn();
+    if (googleUser == null) return;
+    _user = googleUser;
 
-    final googleAuth= await googleUser.authentication;
-    final credential=GoogleAuthProvider.credential(
+    final googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
     await FirebaseAuth.instance.signInWithCredential(credential);
 
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => PasswordCreation()));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => WelcomeUserScreen()));
   }
 }

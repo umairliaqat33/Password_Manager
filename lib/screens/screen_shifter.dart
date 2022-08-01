@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -8,6 +7,7 @@ import 'package:password_manager/models/database.dart';
 import 'package:password_manager/screens/password_creating_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../data_screens/search_dialogue.dart';
 import 'login_screen.dart';
 
 class Shifter extends StatefulWidget {
@@ -16,6 +16,13 @@ class Shifter extends StatefulWidget {
 }
 
 class _ShifterState extends State<Shifter> {
+  @override
+  void initState() {
+    Credentials credentials = Credentials();
+    credentials.getList();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<Credentials>(builder: (context, Transactions, child) {
@@ -43,6 +50,7 @@ class _ShifterState extends State<Shifter> {
             ),
           ),
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             elevation: 20,
             flexibleSpace: Container(
               decoration: BoxDecoration(
@@ -54,6 +62,13 @@ class _ShifterState extends State<Shifter> {
             ),
             title: Text("Password Manager"),
             actions: [
+              IconButton(
+                onPressed: () async {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => SearchScreen()));
+                },
+                icon: Icon(Icons.search),
+              ),
               IconButton(
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut();
