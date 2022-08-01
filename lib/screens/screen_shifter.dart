@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:password_manager/data_screens/add_credentials.dart';
 import 'package:password_manager/data_screens/list_screen.dart';
 import 'package:password_manager/models/database.dart';
 import 'package:password_manager/screens/password_creating_screen.dart';
@@ -23,7 +24,8 @@ class _ShifterState extends State<Shifter> {
         child: Scaffold(
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              print("helow");
+              showModalBottomSheet(
+                  context: context, builder: (context) => AddCredentials());
             },
             child: Container(
               width: 54,
@@ -79,7 +81,7 @@ class _ShifterState extends State<Shifter> {
                 ),
                 Tab(
                   text: "Password Generator",
-                  icon: Icon(Icons.list),
+                  icon: Icon(Icons.password),
                 ),
               ],
             ),
