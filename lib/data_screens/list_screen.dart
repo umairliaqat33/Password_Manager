@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:password_manager/data_screens/view_dialogue.dart';
 import 'package:password_manager/models/database.dart';
 import 'package:provider/provider.dart';
 
@@ -72,85 +73,90 @@ class _PasswordListState extends State<PasswordList> {
                           String password = data.get("password");
                           String email=data.get("email");
                           String website=data.get("website");
-                          return Card(
-                            elevation: 4,
-                            child: Padding(
-                              padding: EdgeInsets.all(4.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(
-                                      left: 20,
-                                      right: 20,
-                                    ),
-                                    padding: EdgeInsets.all(5),
-                                    child: CircleAvatar(
-                                      radius: 30,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(8),
-                                        child: FittedBox(
-                                          child: Text(
-                                            website,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20,
+                          return GestureDetector(
+                            onLongPress: (){
+                              createDialogBox(context,email,name,password,website);
+                            },
+                            child: Card(
+                              elevation: 4,
+                              child: Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(
+                                        left: 20,
+                                        right: 20,
+                                      ),
+                                      padding: EdgeInsets.all(5),
+                                      child: CircleAvatar(
+                                        radius: 30,
+                                        child: Padding(
+                                          padding: EdgeInsets.all(8),
+                                          child: FittedBox(
+                                            child: Text(
+                                              website,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Flexible(
-                                    //it will help our text not to occupy space which is remaining after all other widgets.
-                                    fit: FlexFit.tight,
-                                    child: SingleChildScrollView(
-                                      //this is used to make our text scrollable if text exceeds from limit
-                                      scrollDirection: Axis.horizontal,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            name,
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
+                                    Flexible(
+                                      //it will help our text not to occupy space which is remaining after all other widgets.
+                                      fit: FlexFit.tight,
+                                      child: SingleChildScrollView(
+                                        //this is used to make our text scrollable if text exceeds from limit
+                                        scrollDirection: Axis.horizontal,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              name,
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                          Text(
-                                            email,
-                                            style: TextStyle(
-                                              color: Colors.grey,
+                                            Text(
+                                              email,
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                      child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: media.size.width > 450
-                                        ? TextButton.icon(
-                                            onPressed: () {
+                                    Container(
+                                        child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: media.size.width > 450
+                                          ? TextButton.icon(
+                                              onPressed: () {
 
-                                            },
-                                            icon: Icon(Icons.delete),
-                                            label: Text("Delete"),
-                                          )
-                                        : IconButton(
-                                            onPressed: () {
-                                              Password.delete(data);
-                                              print("password deleted");
-                                            },
-                                            icon: Icon(
-                                              Icons.delete,
-                                              color: Colors.purpleAccent,
+                                              },
+                                              icon: Icon(Icons.delete),
+                                              label: Text("Delete"),
+                                            )
+                                          : IconButton(
+                                              onPressed: () {
+                                                Password.delete(data);
+                                                print("password deleted");
+                                              },
+                                              icon: Icon(
+                                                Icons.delete,
+                                                color: Colors.purpleAccent,
+                                              ),
                                             ),
-                                          ),
-                                  )),
-                                ],
+                                    )),
+                                  ],
+                                ),
                               ),
                             ),
                           );
