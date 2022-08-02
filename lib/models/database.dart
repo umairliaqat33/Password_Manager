@@ -66,7 +66,7 @@ class Credentials with ChangeNotifier {
   }
 
   void update(String email, String name, String website, String password,
-      DocumentSnapshot data) async {
+      String id) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _auth.currentUser;
     Credentials credentials = Credentials();
@@ -78,7 +78,7 @@ class Credentials with ChangeNotifier {
         .collection('Users')
         .doc(user!.uid)
         .collection('credentials')
-        .doc(data.id)
+        .doc(id)
         .update(credentials.toMap());
     notifyListeners();
   }

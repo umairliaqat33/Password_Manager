@@ -1,15 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:password_manager/data_screens/add_credentials.dart';
 import 'package:password_manager/data_screens/list_screen.dart';
+import 'package:password_manager/data_screens/signOut_alert_dialogue.dart';
 import 'package:password_manager/models/database.dart';
 import 'package:password_manager/screens/password_creating_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../data_screens/search_dialogue.dart';
-import 'login_screen.dart';
 
 class Shifter extends StatefulWidget {
   @override
@@ -17,6 +15,22 @@ class Shifter extends StatefulWidget {
 }
 
 class _ShifterState extends State<Shifter> {
+  String name = "";
+
+  getName() {
+    if (user != null) {
+      FirebaseFirestore.instance
+          .collection("Users")
+          .doc(user!.uid)
+          .get()
+          .then((value) {
+        setState(() {
+          name = value.get('userName');
+        });
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -73,16 +87,8 @@ class _ShifterState extends State<Shifter> {
               ),
               IconButton(
                 onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
-                  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
-                  await _googleSignIn.signOut();
-                  Fluttertoast.showToast(msg: "SignOutSuccessful");
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => LoginScreen())).catchError((e) {
-                    Fluttertoast.showToast(msg: e);
-                  });
+                  getName();
+                  creatingSignOutAlertDialog(context, name);
                 },
                 icon: Icon(Icons.logout),
               ),

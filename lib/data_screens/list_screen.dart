@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:password_manager/data_screens/update_dialogue.dart';
 import 'package:password_manager/data_screens/view_dialogue.dart';
-import 'alert_dialogue.dart';
+
+import 'delete_alert_dialogue.dart';
 
 class PasswordList extends StatefulWidget {
   const PasswordList({Key? key}) : super(key: key);
@@ -130,30 +132,40 @@ class _PasswordListState extends State<PasswordList> {
                               ),
                             ),
                           ),
-                          Container(
-                              child: Align(
-                            alignment: Alignment.centerRight,
-                            child: media.size.width > 450
-                                ? TextButton.icon(
-                                    onPressed: () {
-                                      creatingDeleteAlertDialog(
-                                          context, website);
-                                    },
-                                    icon: Icon(Icons.delete),
-                                    label: Text("Delete"),
-                                  )
-                                : IconButton(
-                                    onPressed: () {
-                                      creatingDeleteAlertDialog(
-                                          context, website);
-                                      print("password deleted");
-                                    },
-                                    icon: Icon(
-                                      Icons.delete,
-                                      color: Colors.purpleAccent,
-                                    ),
+                          Row(
+                            children: [
+                              Container(
+                                  child: Align(
+                                alignment: Alignment.centerRight,
+                                child: IconButton(
+                                  onPressed: () {
+                                    createUpdateDialogBox(context, email, name,
+                                        password, website, data.id);
+
+                                    print("password updated");
+                                  },
+                                  icon: Icon(
+                                    Icons.edit_note,
+                                    color: Colors.purpleAccent,
                                   ),
-                          )),
+                                ),
+                              )),
+                              Container(
+                                  child: Align(
+                                alignment: Alignment.centerRight,
+                                child: IconButton(
+                                  onPressed: () {
+                                    creatingDeleteAlertDialog(context, data);
+                                    print("password deleted");
+                                  },
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: Colors.purpleAccent,
+                                  ),
+                                ),
+                              )),
+                            ],
+                          ),
                         ],
                       ),
                     ),
