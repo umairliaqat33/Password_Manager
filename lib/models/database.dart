@@ -105,7 +105,7 @@ class Credentials with ChangeNotifier {
     });
   }
 
-  void clearit() {
+  void clearIt() {
     sampleList.clear();
   }
 }

@@ -7,7 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:password_manager/models/constants.dart';
 import 'package:password_manager/screens/register_screen.dart';
-import 'package:password_manager/screens/welcom_screen.dart';
+import 'package:password_manager/screens/welcome_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -32,20 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.purple,
-          ),
-          onPressed: () {
-            // Navigator.pushReplacement(context,
-            //     MaterialPageRoute(builder: (context) => WelcomeScreen()));
-          },
-        ),
-      ),
       backgroundColor: Colors.white,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
@@ -248,6 +234,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future googleSignIn() async {
     final googleUser = await _googleSignIn.signIn();
+    setState(() {
+      showSpinner = true;
+    });
     if (googleUser == null) return;
     _user = googleUser;
 
@@ -258,7 +247,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     await FirebaseAuth.instance.signInWithCredential(credential);
-
+    setState(() {
+      showSpinner = false;
+    });
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => WelcomeUserScreen()));
   }

@@ -11,6 +11,6 @@ class CredentialUserModel {
   }
 
   Map<String, dynamic> toMap() {
-    return {'userName': userName, 'password': email, 'id': id};
+    return {'userName': userName, 'email': email, 'id': id};
   }
 }

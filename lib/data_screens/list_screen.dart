@@ -2,12 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:password_manager/data_screens/view_dialogue.dart';
-import 'package:password_manager/models/database.dart';
-import 'package:provider/provider.dart';
-
-final _fireStore = FirebaseFirestore.instance;
-final _auth = FirebaseAuth.instance;
-User? user = _auth.currentUser;
+import 'alert_dialogue.dart';
 
 class PasswordList extends StatefulWidget {
   const PasswordList({Key? key}) : super(key: key);
@@ -17,149 +12,157 @@ class PasswordList extends StatefulWidget {
 }
 
 class _PasswordListState extends State<PasswordList> {
+  final _fireStore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
+  User? user;
+
   @override
   void initState() {
-    setState(() {
-      Credentials transact = Credentials();
-      transact.getList();
-      // transact.recentTransactions;
-    });
     super.initState();
+    user = _auth.currentUser!;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Credentials>(
-      builder: (context, Password, child) {
-        return StreamBuilder<QuerySnapshot>(
-          stream: _fireStore
-              .collection('Users')
-              .doc(user!.uid)
-              .collection('credentials')
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            final media = MediaQuery.of(context);
-            return snapshot.connectionState == ConnectionState.waiting
-                ? Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
-                    ),
-                  )
-                : snapshot.data!.docs.isEmpty
-                    ? Column(
+    return StreamBuilder<QuerySnapshot>(
+      stream: _fireStore
+          .collection('Users')
+          .doc(user!.uid)
+          .collection('credentials')
+          .snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        final media = MediaQuery.of(context);
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+            ),
+          );
+        }
+
+        if (snapshot.hasData) {
+          final data = snapshot.data;
+          if (data == null) {
+            return const SizedBox();
+          }
+          if (data.docs.isEmpty) {
+            return Column(
+              children: [
+                Text(
+                  "No transaction yet!",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                SizedBox(height: 10),
+                Container(
+                  height: 200,
+                  child: Image.asset(
+                    "image/waiting.png",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ],
+            );
+          }
+
+          return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                DocumentSnapshot data = snapshot.data!.docs[index];
+                String name = data.get("userName");
+                String password = data.get("password");
+                String email = data.get("email");
+                String website = data.get("website");
+                return GestureDetector(
+                  onTap: () {
+                    createDialogBox(context, email, name, password, website);
+                  },
+                  child: Card(
+                    elevation: 4,
+                    child: Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
-                            "No transaction yet!",
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
                           Container(
-                            height: 200,
-                            child: Image.asset(
-                              "image/waiting.png",
-                              fit: BoxFit.cover,
+                            margin: EdgeInsets.only(
+                              left: 20,
+                              right: 20,
                             ),
-                          ),
-                        ],
-                      )
-                    : ListView.builder(
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context, index) {
-                          DocumentSnapshot data = snapshot.data!.docs[index];
-                          String name = data.get("userName");
-                          String password = data.get("password");
-                          String email = data.get("email");
-                          String website = data.get("website");
-                          return GestureDetector(
-                            onTap: () {
-                              createDialogBox(
-                                  context, email, name, password, website);
-                            },
-                            child: Card(
-                              elevation: 4,
+                            padding: EdgeInsets.all(5),
+                            child: CircleAvatar(
+                              radius: 30,
                               child: Padding(
-                                padding: EdgeInsets.all(4.0),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        left: 20,
-                                        right: 20,
-                                      ),
-                                      padding: EdgeInsets.all(5),
-                                      child: CircleAvatar(
-                                        radius: 30,
-                                        child: Padding(
-                                          padding: EdgeInsets.all(8),
-                                          child: FittedBox(
-                                            child: Text(
-                                              website,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
+                                padding: EdgeInsets.all(8),
+                                child: FittedBox(
+                                  child: Text(
+                                    website,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
                                     ),
-                                    Flexible(
-                                      fit: FlexFit.tight,
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              name,
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(
-                                              email,
-                                              style: TextStyle(
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                        child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: media.size.width > 450
-                                          ? TextButton.icon(
-                                        onPressed: () {},
-                                              icon: Icon(Icons.delete),
-                                              label: Text("Delete"),
-                                            )
-                                          : IconButton(
-                                              onPressed: () {
-                                                Password.delete(data);
-                                                print("password deleted");
-                                              },
-                                              icon: Icon(
-                                                Icons.delete,
-                                                color: Colors.purpleAccent,
-                                              ),
-                                            ),
-                                    )),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),
-                          );
-                        });
-          },
-        );
+                          ),
+                          Flexible(
+                            fit: FlexFit.tight,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    name,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    email,
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                              child: Align(
+                            alignment: Alignment.centerRight,
+                            child: media.size.width > 450
+                                ? TextButton.icon(
+                                    onPressed: () {
+                                      creatingDeleteAlertDialog(
+                                          context, website);
+                                    },
+                                    icon: Icon(Icons.delete),
+                                    label: Text("Delete"),
+                                  )
+                                : IconButton(
+                                    onPressed: () {
+                                      creatingDeleteAlertDialog(
+                                          context, website);
+                                      print("password deleted");
+                                    },
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.purpleAccent,
+                                    ),
+                                  ),
+                          )),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              });
+        } else {
+          return Text('No Data');
+        }
       },
     );
   }

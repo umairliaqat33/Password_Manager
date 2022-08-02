@@ -8,7 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:password_manager/models/constants.dart';
 import 'package:password_manager/models/credentials.dart';
-import 'package:password_manager/screens/welcom_screen.dart';
+import 'package:password_manager/screens/welcome_screen.dart';
 
 import 'login_screen.dart';
 
@@ -38,10 +38,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: ModalProgressHUD(
@@ -341,6 +337,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   Future googleSignIn() async {
+    setState(() {
+      showSpinner = true;
+    });
     final googleUser = await _googleSignIn.signIn();
     if (googleUser == null) return;
     _user = googleUser;
@@ -358,6 +357,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
     print(name_Controller.text);
     postDetailsToFireStore();
+    setState(() {
+      showSpinner = false;
+    });
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => WelcomeUserScreen()));
     Fluttertoast.showToast(msg: credential.signInMethod);

@@ -1,11 +1,8 @@
 import 'dart:math';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:password_manager/screens/login_screen.dart';
 
 class PasswordCreation extends StatefulWidget {
   const PasswordCreation({Key? key}) : super(key: key);

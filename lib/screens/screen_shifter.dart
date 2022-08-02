@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:password_manager/data_screens/add_credentials.dart';
 import 'package:password_manager/data_screens/list_screen.dart';
 import 'package:password_manager/models/database.dart';
@@ -18,21 +19,22 @@ class Shifter extends StatefulWidget {
 class _ShifterState extends State<Shifter> {
   @override
   void initState() {
-    Credentials credentials = Credentials();
-    credentials.getList();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Credentials>(builder: (context, Transactions, child) {
+    return Consumer<Credentials>(builder: (context, credentials, child) {
       return DefaultTabController(
         length: 2,
         child: Scaffold(
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              showModalBottomSheet(
-                  context: context, builder: (context) => AddCredentials());
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AddCredentials();
+                  });
             },
             child: Container(
               width: 54,
@@ -72,6 +74,8 @@ class _ShifterState extends State<Shifter> {
               IconButton(
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut();
+                  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
+                  await _googleSignIn.signOut();
                   Fluttertoast.showToast(msg: "SignOutSuccessful");
                   Navigator.pushReplacement(
                       context,

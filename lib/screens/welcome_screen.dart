@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:password_manager/screens/screen_shifter.dart';
 
 class WelcomeUserScreen extends StatefulWidget {
@@ -39,13 +38,14 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
             .get()
             .then((value) {
           setState(() {
-            name = value.get('name');
+            name = value.get('userName');
           });
         });
-      } else {
-        GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
-        name = _googleSignIn.currentUser!.displayName!;
       }
+      // else {
+      //   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
+      //   name = _googleSignIn.currentUser!.displayName!;
+      // }
     } catch (e) {
       print(e.toString());
       Fluttertoast.showToast(msg: e.toString());

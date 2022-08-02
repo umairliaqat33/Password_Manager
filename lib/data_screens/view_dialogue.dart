@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:password_manager/models/database.dart';
 
 createDialogBox(BuildContext context, String email, String username,
     String password, String website) {
@@ -82,7 +81,7 @@ createDialogBox(BuildContext context, String email, String username,
                       enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.purple)),
                     ),
-                    controller: emailController,
+                    controller: usernameController,
                   ),
                   TextField(
                     readOnly: true,
@@ -104,7 +103,7 @@ createDialogBox(BuildContext context, String email, String username,
                       enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.purple)),
                     ),
-                    controller: emailController,
+                    controller: passwordController,
                   ),
                   TextField(
                     readOnly: true,
@@ -127,7 +126,7 @@ createDialogBox(BuildContext context, String email, String username,
                       enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.purple)),
                     ),
-                    controller: emailController,
+                    controller: websiteController,
                   ),
                 ],
               ),

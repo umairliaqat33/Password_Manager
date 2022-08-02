@@ -66,7 +66,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             createDialogBox(
                                 context,
                                 data['email'],
-                                data['name'],
+                                data['userName'],
                                 data['password'],
                                 data['website']);
                           },
