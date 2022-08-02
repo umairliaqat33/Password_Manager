@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:password_manager/data_screens/delete_alert_dialogue.dart';
 import 'package:password_manager/data_screens/update_dialogue.dart';
 import 'package:password_manager/data_screens/view_dialogue.dart';
 
-import 'delete_alert_dialogue.dart';
+import '../data_screens/delete_alert_dialogue.dart';
 
 class PasswordList extends StatefulWidget {
   const PasswordList({Key? key}) : super(key: key);
@@ -15,12 +16,12 @@ class PasswordList extends StatefulWidget {
 
 class _PasswordListState extends State<PasswordList> {
   final _fireStore = FirebaseFirestore.instance;
-  final _auth = FirebaseAuth.instance;
   User? user;
 
   @override
   void initState() {
     super.initState();
+    final _auth = FirebaseAuth.instance;
     user = _auth.currentUser!;
   }
 

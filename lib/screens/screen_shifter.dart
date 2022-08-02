@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:password_manager/data_screens/add_credentials.dart';
-import 'package:password_manager/data_screens/list_screen.dart';
+import 'package:password_manager/screens/list_screen.dart';
 import 'package:password_manager/data_screens/signOut_alert_dialogue.dart';
 import 'package:password_manager/models/database.dart';
 import 'package:password_manager/screens/password_creating_screen.dart';
