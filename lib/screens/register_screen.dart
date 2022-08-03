@@ -9,6 +9,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:password_manager/models/constants.dart';
 import 'package:password_manager/models/credentials.dart';
 import 'package:password_manager/screens/welcome_screen.dart';
+import 'package:password_manager/widgets/logo_widget.dart';
 
 import 'login_screen.dart';
 
@@ -53,10 +54,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   children: <Widget>[
                     Hero(
                       tag: 'logo',
-                      child: Container(
-                        height: 200.0,
-                        child: Image.asset('image/Password_manager.png'),
-                      ),
+                      child: LogoWidget(),
                     ),
                     Visibility(
                       visible: isLoginError,

@@ -17,7 +17,6 @@ class PasswordList extends StatefulWidget {
 class _PasswordListState extends State<PasswordList> {
   final _fireStore = FirebaseFirestore.instance;
   User? user;
-
   @override
   void initState() {
     super.initState();

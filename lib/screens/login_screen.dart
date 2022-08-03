@@ -8,6 +8,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:password_manager/models/constants.dart';
 import 'package:password_manager/screens/register_screen.dart';
 import 'package:password_manager/screens/welcome_screen.dart';
+import 'package:password_manager/widgets/logo_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -46,10 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: <Widget>[
                   Hero(
                     tag: 'logo',
-                    child: Container(
-                      height: 200.0,
-                      child: Image.asset('image/Password_manager.png'),
-                    ),
+                    child: LogoWidget(),
                   ),
                   SizedBox(
                     height: 48.0,

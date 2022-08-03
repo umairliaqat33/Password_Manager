@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:password_manager/screens/screen_shifter.dart';
+import 'package:password_manager/widgets/logo_widget.dart';
 
 class WelcomeUserScreen extends StatefulWidget {
   @override
@@ -42,12 +46,8 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
           });
         });
       }
-      // else {
-      //   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['Email']);
-      //   name = _googleSignIn.currentUser!.displayName!;
-      // }
     } catch (e) {
-      print(e.toString());
+      log(e.toString());
       Fluttertoast.showToast(msg: e.toString());
     }
   }
@@ -62,10 +62,7 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
           children: <Widget>[
             Hero(
               tag: 'logo',
-              child: Container(
-                height: 200.0,
-                child: Image.asset('image/Password_manager.png'),
-              ),
+              child: LogoWidget(),
             ),
             Text(
               "Welcome",

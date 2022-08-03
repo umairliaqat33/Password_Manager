@@ -1,19 +1,18 @@
 // @dart=2.9
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+
 import 'package:password_manager/models/database.dart';
 import 'package:password_manager/screens/login_screen.dart';
 import 'package:password_manager/screens/welcome_screen.dart';
-import 'package:provider/provider.dart';
-
-User user = FirebaseAuth.instance.currentUser;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  // runApp(ChangeNotifierProvider(
-  //     create: (context) => Transactions(), child: MyApp()));
   runApp(ChangeNotifierProvider(
       create: (context) => Credentials(), child: MyApp()));
 }
@@ -33,7 +32,7 @@ class MyApp extends StatelessWidget {
         future: _fbApp,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            print("You have an error ${snapshot.error.toString()}");
+            log("You have an error ${snapshot.error.toString()}");
             return Text("Something went wrong");
           } else if (snapshot.hasData) {
             return MyHomePage();
