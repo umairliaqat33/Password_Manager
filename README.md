@@ -29,7 +29,7 @@ Application will be able to show app/website name for which credentials are bein
 
 
 
-####Watch a video to understand flow of app.
+######Watch a video to understand flow of app.
 
 [![Watch the video](image/ic_launcher_foreground.png)](https://www.youtube.com/watch?v=Rr890cZD4Xs)
 
