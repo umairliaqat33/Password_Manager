@@ -28,6 +28,11 @@ There is a limit
 
 
 ###### Search Credentials using username
+
+Watch a video to understand flow of app.
+
+[![Watch the video](https://img.youtube.com/vi/nTQUwghvy5Q/default.jpg)](https://www.youtube.com/watch?v=Wb2rm5iWizg)
+
 ![](image/search_credentials.png)
 
 ###### Password Generator
