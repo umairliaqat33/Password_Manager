@@ -50,6 +50,3 @@ You have your own password that will be limited only to yourself.
 
 [![Watch the video](image/ic_launcher_foreground.png)](https://www.youtube.com/watch?v=Rr890cZD4Xs)
 
-
-
-
