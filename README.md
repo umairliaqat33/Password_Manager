@@ -17,7 +17,7 @@ In this app you can
 
 ### Use Case and Description
 
-1. Add Credentials
+1. #### Add Credentials
     You can add credentials at your ease in which you can save your password, email, username if you are having trouble remembering them.
 You can also generate a random password by clicking generate random password button which is visible right under your text field. That
 wil create a random password and automatically put it in password field.
