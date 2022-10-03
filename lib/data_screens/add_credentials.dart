@@ -120,7 +120,7 @@ class _AddCredentialsState extends State<AddCredentials> {
                                 "!@#\\\$%^&*()_+/.,`AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890");
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.purple,
+                            backgroundColor: Colors.purple,
                           ),
                           child: Text(
                             "Generate Password",
@@ -147,7 +147,7 @@ class _AddCredentialsState extends State<AddCredentials> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.purple,
+                            backgroundColor: Colors.purple,
                           ),
                           child: Text(
                             "Add Credentials",

@@ -1,88 +1,33 @@
-import 'dart:math';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:password_manager/providers/password_generator_state_notifier.dart';
 
-class PasswordCreation extends StatefulWidget {
+class PasswordCreation extends ConsumerStatefulWidget {
   const PasswordCreation({Key? key}) : super(key: key);
 
   @override
-  State<PasswordCreation> createState() => _PasswordCreationState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _PasswordCreationState();
 }
 
-class _PasswordCreationState extends State<PasswordCreation> {
+class _PasswordCreationState extends ConsumerState<PasswordCreation> {
   late TextEditingController textController = TextEditingController();
-  int length = 8;
-  bool isBoxErrorVisible = false;
-  bool isCopyErrorVisible = false;
-  String generatedString = "";
-  bool isCharacter = true;
-  bool isNumbers = true;
-  bool isSpecialCharacters = true;
-  static const String chars =
-      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz';
-  static const String numbers = '1234567890';
-  static const String specialCharacters = '!@#\\\$%^&*()_+/.,`';
-
-  void selectText() {
-    if (isCharacter == true &&
-        isSpecialCharacters == true &&
-        isNumbers == true) {
-      randomCharString(length, chars + specialCharacters + numbers);
-    } else {
-      if (isCharacter == true) {
-        if (isNumbers == true) {
-          randomCharString(length, chars + numbers);
-        } else if (isSpecialCharacters == true) {
-          randomCharString(length, chars + specialCharacters);
-        } else {
-          randomCharString(length, chars);
-        }
-      } else if (isNumbers == true) {
-        if (isCharacter == true) {
-          randomCharString(length, chars + numbers);
-        } else if (isSpecialCharacters == true) {
-          randomCharString(length, numbers + specialCharacters);
-        } else {
-          randomCharString(length, numbers);
-        }
-      } else if (isSpecialCharacters == true) {
-        if (isCharacter == true) {
-          randomCharString(length, chars + specialCharacters);
-        } else if (isNumbers == true) {
-          randomCharString(length, numbers + specialCharacters);
-        } else {
-          randomCharString(length, specialCharacters);
-        }
-      } else {
-        textController.clear();
-        setState(() {
-          isBoxErrorVisible = true;
-        });
-      }
-    }
-  }
-
-  void randomCharString(int length, String text) {
-    Random _random = Random();
-
-    final randomString =
-        List.generate(length, (index) => text[_random.nextInt(text.length)])
-            .join();
-    setState(() {
-      textController.text = randomString;
-    });
-  }
 
   @override
   void initState() {
-    selectText();
     super.initState();
+    ref.read(paswordStateNotifierProvider);
+    textController.text = ref.read(passwordGenratorProvider);
   }
 
   @override
   Widget build(BuildContext context) {
+    final password = ref.watch(passwordGenratorProvider);
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -104,16 +49,13 @@ class _PasswordCreationState extends State<PasswordCreation> {
                       borderSide: BorderSide(color: Colors.purple),
                     ),
                   ),
-                  // obscureText: false,
                   enabled: false,
                   controller: textController,
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: 10),
               Visibility(
-                visible: isCopyErrorVisible,
+                visible: false,
                 child: Text(
                   "Please generate password first",
                   style: TextStyle(
@@ -129,10 +71,9 @@ class _PasswordCreationState extends State<PasswordCreation> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      setState(() {
-                        isBoxErrorVisible = false;
-                      });
-                      selectText();
+                      ref.read(passwordGenratorProvider);
+                      textController.text = password;
+                      log('message');
                     },
                     style: ButtonStyle(
                       foregroundColor: MaterialStateColor.resolveWith(
@@ -151,14 +92,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
                         Clipboard.setData(
                             ClipboardData(text: textController.text));
                         Fluttertoast.showToast(msg: "Text Copied");
-                        setState(() {
-                          isCopyErrorVisible = false;
-                        });
-                      } else {
-                        setState(() {
-                          isCopyErrorVisible = true;
-                        });
-                      }
+                      } else {}
                     },
                     style: ButtonStyle(
                       foregroundColor: MaterialStateColor.resolveWith(
@@ -170,9 +104,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
                   ),
                 ],
               ),
-              SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: 10),
               Text(
                 "Select checkbox to generate password",
                 style: TextStyle(
@@ -181,7 +113,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
                     color: Colors.purple),
               ),
               Visibility(
-                visible: isBoxErrorVisible,
+                visible: false,
                 child: Text(
                   "Please make a selection of text in password",
                   style: TextStyle(
@@ -193,12 +125,15 @@ class _PasswordCreationState extends State<PasswordCreation> {
               Row(
                 children: [
                   Checkbox(
-                      value: isCharacter,
-                      onChanged: (value) {
-                        setState(() {
-                          isCharacter = !isCharacter;
-                        });
-                      }),
+                    value:
+                        ref.watch(paswordStateNotifierProvider).enableUpperCase,
+                    onChanged: (v) {
+                      ref
+                          .read(paswordStateNotifierProvider.notifier)
+                          .toggleUpperCase();
+                      textController.text = password;
+                    },
+                  ),
                   Text(
                     "Alphabets",
                     style: TextStyle(color: Colors.purpleAccent),
@@ -208,68 +143,83 @@ class _PasswordCreationState extends State<PasswordCreation> {
               Row(
                 children: [
                   Checkbox(
-                      value: isSpecialCharacters,
-                      onChanged: (value) {
-                        setState(() {
-                          isSpecialCharacters = !isSpecialCharacters;
-                        });
-                      }),
-                  Text("Special Characters",
-                      style: TextStyle(color: Colors.purpleAccent)),
+                    value:
+                        ref.watch(paswordStateNotifierProvider).enableSymbols,
+                    onChanged: (v) {
+                      ref
+                          .read(paswordStateNotifierProvider.notifier)
+                          .toggleSymbols();
+                      textController.text = password;
+                    },
+                  ),
+                  Text(
+                    "Special Characters",
+                    style: TextStyle(
+                      color: Colors.purpleAccent,
+                    ),
+                  ),
                 ],
               ),
               Row(
                 children: [
                   Checkbox(
-                      value: isNumbers,
-                      onChanged: (value) {
-                        setState(() {
-                          isNumbers = !isNumbers;
-                        });
-                      }),
-                  Text("Digits", style: TextStyle(color: Colors.purpleAccent)),
+                    value: ref.watch(paswordStateNotifierProvider).enableDigits,
+                    onChanged: (v) {
+                      ref
+                          .read(paswordStateNotifierProvider.notifier)
+                          .toggleDigits();
+                      textController.text = password;
+                    },
+                  ),
+                  Text(
+                    "Digits",
+                    style: TextStyle(
+                      color: Colors.purpleAccent,
+                    ),
+                  ),
                 ],
               ),
-              SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: 10),
               Row(
                 children: [
                   Text("Password Length: ",
                       style: TextStyle(color: Colors.purpleAccent)),
-                  Text("$length",
-                      style: TextStyle(
-                          color: Colors.purpleAccent,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold)),
+                  Text(
+                    "${ref.watch(paswordLengthNotifierProvider).toInt()}",
+                    style: TextStyle(
+                      color: Colors.purpleAccent,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
-              SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: 10),
               SliderTheme(
                 data: SliderTheme.of(context).copyWith(
                   thumbShape: RoundSliderThumbShape(enabledThumbRadius: 15),
                   overlayShape: RoundSliderOverlayShape(overlayRadius: 30),
                   activeTrackColor: Colors.purple,
                   thumbColor: Colors.purpleAccent,
-                  // overlayColor: Color(0x29EB1555),
                   inactiveTrackColor: Color(0xFF8D8E98),
                   inactiveTickMarkColor: Color(0xFF8D8E98),
                   activeTickMarkColor: Colors.pink,
                 ),
                 child: Slider(
-                  value: length.toDouble(),
+                  value: ref.watch(paswordLengthNotifierProvider),
                   divisions: 50,
                   max: 50.0,
                   min: 8,
-                  onChanged: (newValue) {
-                    setState(() {
-                      length = newValue.toInt();
-                    });
-                    // print(length);
+                  onChanged: (v) {
+                    ref
+                        .read(paswordLengthNotifierProvider.notifier)
+                        .toggleState(v);
+                    textController.text = password;
                   },
-                  label: length.round().toString(),
+                  label: ref
+                      .watch(paswordLengthNotifierProvider)
+                      .toInt()
+                      .toString(),
                 ),
               ),
             ],

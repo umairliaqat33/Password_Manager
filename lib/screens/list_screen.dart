@@ -5,8 +5,6 @@ import 'package:password_manager/data_screens/delete_alert_dialogue.dart';
 import 'package:password_manager/data_screens/update_dialogue.dart';
 import 'package:password_manager/data_screens/view_dialogue.dart';
 
-import '../data_screens/delete_alert_dialogue.dart';
-
 class PasswordList extends StatefulWidget {
   const PasswordList({Key? key}) : super(key: key);
 
